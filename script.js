@@ -33,6 +33,13 @@ function onAddItemSubmit(e) {
     itemToEdit.classList.remove('edit-mode');
     itemToEdit.remove();
     isEditMode = false;
+  } else {
+    if (checkIfItemExists(newItem)) {
+      alert('That item already exists!');
+      // Clear item textbox
+      itemInput.value = '';
+      return;
+    }
   }
 
   // Create item DOM element
@@ -67,6 +74,12 @@ function createButton(classes) {
   return button;
 }
 
+function createIcon(classes) {
+  const icon = document.createElement('i');
+  icon.className = classes;
+  return icon;
+}
+
 function addItemToStorage(item) {
   const itemsFromStorage = getItemsFromStorage();
 
@@ -97,6 +110,11 @@ function onClickItem(e) {
   }
 }
 
+function checkIfItemExists(item) {
+  const itemsFromStorage = getItemsFromStorage();
+  return itemsFromStorage.includes(item);
+}
+
 function setItemToEdit(item) {
   isEditMode = true;
 
@@ -108,12 +126,6 @@ function setItemToEdit(item) {
   formBtn.innerHTML = '<i class="fa-solid fa-pen"></i> Update Item';
   formBtn.style.backgroundColor = '#228B22';
   itemInput.value = item.textContent;
-}
-
-function createIcon(classes) {
-  const icon = document.createElement('i');
-  icon.className = classes;
-  return icon;
 }
 
 function removeItem(item) {
