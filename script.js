@@ -11,7 +11,7 @@ let isEditMode = false;
 function displayItems() {
   const itemsFromStorage = getItemsFromStorage();
   itemsFromStorage.forEach((item) => addItemToDOM(item));
-  checkUI();
+  resetUI();
 }
 
 function onAddItemSubmit(e) {
@@ -25,13 +25,23 @@ function onAddItemSubmit(e) {
     return;
   }
 
+  // Check for edit mode
+  if (isEditMode) {
+    const itemToEdit = itemList.querySelector('.edit-mode');
+
+    removeItemFromStorage(itemToEdit.textContent);
+    itemToEdit.classList.remove('edit-mode');
+    itemToEdit.remove();
+    isEditMode = false;
+  }
+
   // Create item DOM element
   addItemToDOM(newItem);
 
   // Add item to local storage
   addItemToStorage(newItem);
 
-  checkUI();
+  resetUI();
 
   itemInput.value = '';
 }
@@ -114,7 +124,7 @@ function removeItem(item) {
     // Remove item from local storage
     removeItemFromStorage(item.textContent);
 
-    checkUI();
+    resetUI();
   }
 }
 
@@ -136,7 +146,7 @@ function clearItems() {
   // Clear from local storage
   localStorage.removeItem('items');
 
-  checkUI();
+  resetUI();
 }
 
 function filterItems(e) {
@@ -154,7 +164,9 @@ function filterItems(e) {
   });
 }
 
-function checkUI() {
+function resetUI() {
+  itemInput.value = '';
+
   const items = itemList.querySelectorAll('li');
 
   if (items.length === 0) {
@@ -164,6 +176,11 @@ function checkUI() {
     clearBtn.style.display = 'block';
     itemFilter.style.display = 'block';
   }
+
+  formBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Add Item';
+  formBtn.style.backgroundColor = '#333';
+
+  isEditMode = false;
 }
 
 // Initialize app
@@ -175,7 +192,7 @@ function init() {
   itemFilter.addEventListener('input', filterItems);
   document.addEventListener('DOMContentLoaded', displayItems);
 
-  checkUI();
+  resetUI();
 }
 
 init();
